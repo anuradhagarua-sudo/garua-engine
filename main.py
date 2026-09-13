@@ -7,17 +7,22 @@ class MockModule(ModuleType):
     def __getattr__(self, name):
         return MockModule(name)
 
+# Create distinct dummy classes to prevent duplicate base class collisions
+class DummyReconnectingFactory: pass
+class DummyWSFactory: pass
+class DummyWSProtocol: pass
+
 sys.modules['twisted'] = MockModule('twisted')
 sys.modules['twisted.internet'] = MockModule('twisted.internet')
 sys.modules['twisted.internet.protocol'] = MockModule('twisted.internet.protocol')
-sys.modules['twisted.internet.protocol'].ReconnectingClientFactory = object
+sys.modules['twisted.internet.protocol'].ReconnectingClientFactory = DummyReconnectingFactory
 sys.modules['twisted.python'] = MockModule('twisted.python')
 
 sys.modules['autobahn'] = MockModule('autobahn')
 sys.modules['autobahn.twisted'] = MockModule('autobahn.twisted')
 sys.modules['autobahn.twisted.websocket'] = MockModule('autobahn.twisted.websocket')
-sys.modules['autobahn.twisted.websocket'].WebSocketClientProtocol = object
-sys.modules['autobahn.twisted.websocket'].WebSocketClientFactory = object
+sys.modules['autobahn.twisted.websocket'].WebSocketClientProtocol = DummyWSProtocol
+sys.modules['autobahn.twisted.websocket'].WebSocketClientFactory = DummyWSFactory
 sys.modules['autobahn.twisted.websocket'].connectWS = lambda *args, **kwargs: None
 # -----------------------------------------------------------
 
