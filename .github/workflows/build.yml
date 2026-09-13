@@ -27,17 +27,17 @@ jobs:
             build-essential git ffmpeg \
             libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
             libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev \
-            zlib1g-dev libffi-dev libssl-dev  autoconf automake \
+            zlib1g-dev libffi-dev libssl-dev autoconf automake \
             libtool pkg-config cmake zip unzip
+          
+          # Install Buildozer and Cython natively
           python -m pip install --upgrade pip
-          pip install "cython==0.29.37" virtualenv
+          pip install buildozer "cython==0.29.37" virtualenv
 
-      - name: Build APK via Buildozer Action
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: stable
+      - name: Build APK Natively
+        run: |
+          # Piping 'yes' automatically accepts the Android SDK license prompts
+          yes | buildozer -v android debug
 
       - name: Upload Finished APK
         uses: actions/upload-artifact@v4
